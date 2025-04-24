@@ -74,9 +74,7 @@
 				<i class='bx bxs-bell' ></i>
 				<span class="num">8</span>
 			</a>
-			<a href="#" class="profile">
-				<img src="image/black-profile.png">
-			</a>
+			
 			
 		</nav>
 		<!-- MAIN -->
@@ -144,54 +142,40 @@
 						<tbody>
 							<tr>
 								<td>
-									<img src="">
+									
 									<p>aya inas</p>
 								</td>
 								<td>01-10-2021</td>
-								<td>
-									<a href="#">
-									 <i class='bx bx-user-plus'></i>
-								    </a>
+								<td  class="assignee-cell">
+									<a href="#" class="assignee-icon" data-toggle="modal" data-target="#assign-modal">
+										<i class='bx bx-user-plus'></i>
+									</a>
 								</td>
-								<td><span class="status completed">Completed</span></td>
+								<td><span class="status pending">Pending</span></td>
 								
 							</tr>
 							<tr>
 								<td>
-									<img src="">
+									
 									<p>ben krouda gogo</p>
 								</td>
 								<td>01-10-2021</td>
-								<td>
-									<a href="#">
+								<td class="assignee-cell">
+									<a href="#" class="assignee-icon" data-toggle="modal" data-target="#assign-modal">
 										<i class='bx bx-user-plus'></i>
-									   </a>
+									</a>
 								</td>
 								<td><span class="status pending">Pending</span></td>
 								
 							</tr>
 							<tr>
 								<td>
-									<img src="">
+									
 									<p>Benali fellague mimi</p>
 								</td>
 								<td>01-10-2021</td>
-								<td>
-									<a href="#">
-										<i class='bx bx-user-plus'></i>
-									</a>
-								</td>
-								<td><span class="status process">Process</span></td>
-								
-							</tr>
-							<tr>
-								<td>
-									<img src="">
-									<p>kada besoltan ipti</p>
-								</td>
-								<td>01-10-2021</td>
-								<td>
-									<a href="#">
+								<td class="assignee-cell">
+									<a href="#" class="assignee-icon" data-toggle="modal" data-target="#assign-modal">
 										<i class='bx bx-user-plus'></i>
 									</a>
 								</td>
@@ -200,16 +184,30 @@
 							</tr>
 							<tr>
 								<td>
-									<img src="">
-									<p>luna fatima</p>
+									
+									<p>kada besoltan ipti</p>
 								</td>
 								<td>01-10-2021</td>
-								<td>
-									<a href="#">
+								<td class="assignee-cell">
+									<a href="#" class="assignee-icon" data-toggle="modal" data-target="#assign-modal">
 										<i class='bx bx-user-plus'></i>
 									</a>
 								</td>
-								<td><span class="status completed">Completed</span></td>
+								<td><span class="status pending">Pending</span></td>
+								
+							</tr>
+							<tr>
+								<td>
+							
+									<p>luna fatima</p>
+								</td>
+								<td>01-10-2021</td>
+								<td class="assignee-cell">
+									<a href="#" class="assignee-icon" data-toggle="modal" data-target="#assign-modal">
+										<i class='bx bx-user-plus'></i>
+									</a>
+								</td>
+								<td><span class="status pending">Pending</span></td>
 								
 							</tr>
 						</tbody>
@@ -246,5 +244,325 @@
 	
 
     <script src="script.js"></script> 
+<script>
+// Dropdown toggle logic for assignee
+function closeAllDropdowns() {
+  document.querySelectorAll('.group-dropdown').forEach(dd => dd.style.display = 'none');
+}
+document.addEventListener('click', function(event) {
+  // Hide all dropdowns if clicking outside
+  if (!event.target.closest('.assignee-cell')) {
+    closeAllDropdowns();
+  }
+});
+document.querySelectorAll('.assignee-cell').forEach(cell => {
+  const icon = cell.querySelector('.assignee-icon');
+  const dropdown = cell.querySelector('.group-dropdown');
+  const groupNumSpan = cell.querySelector('.group-num');
+  icon.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (groupNumSpan.style.display === 'inline-block') return; // Don't open dropdown if already selected
+    const isVisible = dropdown.style.display === 'block';
+    closeAllDropdowns();
+    dropdown.style.display = isVisible ? 'none' : 'block';
+  });
+  dropdown.querySelectorAll('li').forEach(item => {
+    item.addEventListener('click', function() {
+      // Hide icon, show number
+      icon.style.display = 'none';
+      groupNumSpan.textContent = this.textContent;
+      groupNumSpan.style.display = 'inline-block';
+      dropdown.style.display = 'none';
+    });
+  });
+});
+</script>
+<style>
+.group-dropdown {
+  position: absolute;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+  min-width: 54px;
+  max-height: 120px;
+  overflow-y: auto;
+  z-index: 10;
+  padding: 0;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid #e0e0e0;
+  font-family: inherit;
+  transition: box-shadow 0.18s;
+}
+.dropdown-header {
+  background: #f7f7f7;
+  font-weight: bold;
+  color: #444;
+  padding: 6px 0 5px 0;
+  font-size: 14px;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+  letter-spacing: 1px;
+}
+.assignee-cell {
+  position: relative;
+  text-align: center;
+}
+.group-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.group-dropdown ul li {
+  padding: 5px 0;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  font-size: 15px;
+  color: #222;
+  text-align: center;
+  border-radius: 3px;
+}
+.group-dropdown ul li:hover {
+  background: #e7f1ff;
+  color: #0a58ca;
+}
+.assignee-icon {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 19px;
+  color: #0a58ca;
+  background: #f8f9fa;
+  border-radius: 50%;
+  padding: 5px 7px;
+  transition: background 0.2s, color 0.2s;
+  border: 1px solid #e1e1e1;
+  min-width: 32px;
+  min-height: 32px;
+  justify-content: center;
+}
+.assignee-icon:hover {
+  background: #e7f1ff;
+  color: #0056b3;
+}
+.group-num {
+  font-size: 16px;
+  color: #0a58ca;
+  font-weight: bold;
+  display: inline-block;
+  min-width: 18px;
+  min-height: 32px;
+  line-height: 32px;
+  text-align: center;
+}
+</style>
+<!-- Modal Overlay and Assign Modal -->
+<div id="assign-overlay" class="assign-overlay" style="display:none;"></div>
+<div id="assign-modal" class="assign-modal" style="display:none;">
+  <div class="assign-modal-content">
+    <div class="assign-modal-title">Assign Group</div>
+    <input type="text" class="assign-search" placeholder="Search" />
+    <div class="assign-group-list">
+      <div class="assign-group-item" data-value="1">
+        <span class="assign-group-icon" style="color:#1976d2;"><i class='bx bx-wrench'></i></span>
+        <span class="assign-group-info">
+          <span class="assign-group-name">Tech Support</span>
+          <span class="assign-group-members">4 members</span>
+        </span>
+      </div>
+      <div class="assign-group-item" data-value="2">
+        <span class="assign-group-icon" style="color:#43a047;"><i class='bx bx-message-rounded-dots'></i></span>
+        <span class="assign-group-info">
+          <span class="assign-group-name">Customer Service</span>
+          <span class="assign-group-members">6 members</span>
+        </span>
+      </div>
+      <div class="assign-group-item" data-value="3">
+        <span class="assign-group-icon" style="color:#fb8c00;"><i class='bx bx-check-circle'></i></span>
+        <span class="assign-group-info">
+          <span class="assign-group-name">Quality Team</span>
+          <span class="assign-group-members">3 members</span>
+        </span>
+      </div>
+    </div>
+    <button class="assign-btn" disabled>Assign</button>
+  </div>
+</div>
+<script>
+// Modal logic
+let selectedAssignCell = null;
+let selectedGroupValue = null;
+// Open modal on icon click
+ document.querySelectorAll('.assignee-icon').forEach(icon => {
+   icon.addEventListener('click', function(e) {
+     e.preventDefault();
+     selectedAssignCell = icon.closest('.assignee-cell');
+     document.getElementById('assign-overlay').style.display = 'block';
+     document.getElementById('assign-modal').style.display = 'flex';
+     document.querySelectorAll('.assign-group-item').forEach(item => item.classList.remove('selected'));
+     document.querySelector('.assign-btn').disabled = true;
+     selectedGroupValue = null;
+   });
+ });
+// Close modal on overlay click
+ document.getElementById('assign-overlay').addEventListener('click', function() {
+   document.getElementById('assign-overlay').style.display = 'none';
+   document.getElementById('assign-modal').style.display = 'none';
+ });
+// Select group
+ document.querySelectorAll('.assign-group-item').forEach(item => {
+   item.addEventListener('click', function() {
+     document.querySelectorAll('.assign-group-item').forEach(i => i.classList.remove('selected'));
+     this.classList.add('selected');
+     selectedGroupValue = this.getAttribute('data-value');
+     document.querySelector('.assign-btn').disabled = false;
+   });
+ });
+// Assign action
+ document.querySelector('.assign-btn').addEventListener('click', function() {
+   if(selectedAssignCell && selectedGroupValue) {
+     // Hide the assign icon
+     selectedAssignCell.querySelector('.assignee-icon').style.display = 'none';
+     // Change the status to Process
+     const row = selectedAssignCell.closest('tr');
+     if(row) {
+       const statusCell = row.querySelector('td:last-child span.status');
+       if(statusCell) {
+         statusCell.textContent = 'Process';
+         statusCell.className = 'status process';
+       }
+     }
+     // Hide modal and overlay
+     document.getElementById('assign-overlay').style.display = 'none';
+     document.getElementById('assign-modal').style.display = 'none';
+   }
+ });
+// Search filter
+ document.querySelector('.assign-search').addEventListener('input', function() {
+   let val = this.value.toLowerCase();
+   document.querySelectorAll('.assign-group-item').forEach(item => {
+     let name = item.querySelector('.assign-group-name').textContent.toLowerCase();
+     item.style.display = name.includes(val) ? '' : 'none';
+   });
+ });
+</script>
+<style>
+.assign-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(40, 50, 70, 0.28);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+}
+.assign-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+.assign-modal-content {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+  padding: 32px 30px 22px 30px;
+  min-width: 340px;
+  max-width: 94vw;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.assign-modal-title {
+  font-size: 1.55rem;
+  font-weight: bold;
+  margin-bottom: 18px;
+  color: #222;
+  letter-spacing: 0.5px;
+}
+.assign-search {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 1rem;
+  margin-bottom: 18px;
+  outline: none;
+  transition: border 0.2s;
+}
+.assign-search:focus {
+  border: 1.5px solid #1976d2;
+}
+.assign-group-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+.assign-group-item {
+  display: flex;
+  align-items: center;
+  background: #f9fafe;
+  border: 1.5px solid #ececec;
+  border-radius: 10px;
+  padding: 11px 14px;
+  cursor: pointer;
+  transition: border 0.18s, background 0.18s;
+}
+.assign-group-item.selected {
+  border: 1.5px solid #1976d2;
+  background: #e7f1ff;
+}
+.assign-group-icon {
+  font-size: 1.45rem;
+  margin-right: 13px;
+  display: flex;
+  align-items: center;
+}
+.assign-group-info {
+  display: flex;
+  flex-direction: column;
+}
+.assign-group-name {
+  font-size: 1.07rem;
+  font-weight: 500;
+  color: #1b1b1b;
+}
+.assign-group-members {
+  font-size: 0.95rem;
+  color: #888;
+  margin-top: 2px;
+}
+.assign-btn {
+  margin-top: 12px;
+  padding: 11px 0;
+  border-radius: 11px;
+  background: #1976d2;
+  color: #fff;
+  font-size: 1.13rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.assign-btn:disabled {
+  background: #bcd4f6;
+  cursor: not-allowed;
+}
+</style>
 </body>
+<style>
+  .assignee-group-dropdown {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+    background: #fff;
+    min-width: 140px;
+    font-size: 15px;
+    margin: 0 0 0 4px;
+  }
+</style>
 </html>
