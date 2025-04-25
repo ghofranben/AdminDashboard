@@ -6,6 +6,9 @@
     <!-- Boxicons -->
 	<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="style.css">
+    <!-- jsPDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     <title>Admin-Dashboard</title>
 </head>
 <body>
@@ -17,40 +20,40 @@
 		</a>
 		<ul class="side-menu top">
 			<li class="active">
-				<a href="#">
-					<i class='bx bxs-dashboard' ></i>
+				<a href="#" id="dashboard-link">
+					<i class='bx bxs-dashboard'></i>
 					<span class="text">Dashboard</span>
 				</a>
 			</li>
 			<li>
-				<a href="#">
-					<i class='bx bxs-doughnut-chart' ></i>
+				<a href="#" id="messages-link">
+					<i class='bx bx-envelope'></i>
+					<span class="text">Messages</span>
+				</a>
+			</li>
+			<li>
+				<a href="#" id="analytics-link">
+					<i class='bx bxs-doughnut-chart'></i>
 					<span class="text">Analytics</span>
 				</a>
 			</li>
 			<li>
-				<a href="#">
-					<i class='bx bxs-message-dots' ></i>
-					<span class="text">Message</span>
-				</a>
-			</li>
-			<li>
-				<a href="#">
-					<i class='bx bxs-group' ></i>
+				<a href="#" id="team-link">
+					<i class='bx bxs-group'></i>
 					<span class="text">Team</span>
 				</a>
 			</li>
 		</ul>
 		<ul class="side-menu">
 			<li>
-				<a href="#">
-					<i class='bx bxs-cog' ></i>
+				<a href="#" id="settings-link">
+					<i class='bx bxs-cog'></i>
 					<span class="text">Settings</span>
 				</a>
 			</li>
 			<li>
 				<a href="#" class="logout">
-					<i class='bx bxs-log-out-circle' ></i>
+					<i class='bx bxs-log-out-circle'></i>
 					<span class="text">Logout</span>
 				</a>
 			</li>
@@ -72,13 +75,289 @@
 			<label for="switch-mode" class="switch-mode"></label>
 			<a href="#" class="notification">
 				<i class='bx bxs-bell' ></i>
-				<span class="num">8</span>
+				<span class="num">0</span>
 			</a>
-			
-			
+			<!-- Add Notifications Dropdown -->
+			<div class="notifications-menu">
+				<div class="notifications-header">
+					<h3>Notifications</h3>
+					<button class="clear-notifications">Clear All</button>
+				</div>
+				<div class="notifications-list">
+					<!-- Notifications will be added here dynamically -->
+				</div>
+			</div>
 		</nav>
 		<!-- MAIN -->
 		<main>
+			<!-- Messages Section -->
+			<div id="messages-section" style="display:none;">
+				<div class="messenger-container">
+					<!-- Conversations List -->
+					<div class="conversations-list">
+						<div class="conversations-header">
+							<h2>Messages</h2>
+							<button class="new-message-btn">
+								<i class='bx bx-plus'></i>
+							</button>
+						</div>
+						<div class="conversations-search">
+							<input type="text" placeholder="Search conversations...">
+							<i class='bx bx-search'></i>
+						</div>
+						<div class="conversations">
+							<div class="conversation active" data-conversation="admin">
+								<div class="conversation-avatar">
+									<i class='bx bx-user'></i>
+								</div>
+								<div class="conversation-info">
+									<div class="conversation-name">Admin</div>
+									<div class="conversation-preview">Welcome to the dashboard!</div>
+								</div>
+								<div class="conversation-time">10:30 AM</div>
+							</div>
+							<div class="conversation" data-conversation="system">
+								<div class="conversation-avatar">
+									<i class='bx bx-cog'></i>
+								</div>
+								<div class="conversation-info">
+									<div class="conversation-name">System</div>
+									<div class="conversation-preview">Your group assignment was updated</div>
+								</div>
+								<div class="conversation-time">Yesterday</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Chat Area -->
+					<div class="chat-area">
+						<div class="chat-header">
+							<div class="chat-user">
+								<div class="chat-avatar">
+									<i class='bx bx-user'></i>
+								</div>
+								<div class="chat-info">
+									<div class="chat-name">Admin</div>
+									<div class="chat-status">Online</div>
+								</div>
+							</div>
+						</div>
+						<div class="chat-messages">
+							<div class="message received">
+								<div class="message-content">
+									Welcome to the dashboard! Here you can manage users and groups.
+								</div>
+								<div class="message-time">10:30 AM</div>
+							</div>
+							<div class="message sent">
+								<div class="message-content">
+									Thank you! I'm excited to start using the dashboard.
+								</div>
+								<div class="message-time">10:32 AM</div>
+							</div>
+						</div>
+						<div class="chat-input">
+							<textarea placeholder="Type a message..."></textarea>
+							<button class="send-btn">
+								<i class='bx bx-send'></i>
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Message Modal -->
+			<div id="message-modal" class="assign-modal" style="display:none;">
+				<div class="assign-modal-content">
+					<div class="assign-modal-title">Message Details</div>
+					<div id="message-modal-body" style="margin: 20px 0;"></div>
+					<button class="assign-btn" id="close-message-modal">Close</button>
+				</div>
+			</div>
+
+			<!-- Reply Modal -->
+			<div id="reply-modal" class="assign-modal" style="display:none;">
+				<div class="assign-modal-content">
+					<div class="assign-modal-title">Reply to Message</div>
+					<div class="reply-form">
+						<div class="form-group">
+							<label>To:</label>
+							<input type="text" id="reply-to" readonly>
+						</div>
+						<div class="form-group">
+							<label>Subject:</label>
+							<input type="text" id="reply-subject" placeholder="Enter subject">
+						</div>
+						<div class="form-group">
+							<label>Message:</label>
+							<textarea id="reply-message" placeholder="Type your message here..."></textarea>
+						</div>
+						<button class="assign-btn" id="send-reply">Send Reply</button>
+						<button class="assign-btn" id="close-reply-modal">Cancel</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- Team Management Section -->
+			<div id="team-section" style="display:none;">
+				<div class="head-title">
+					<div class="left">
+						<h1>Team Management</h1>
+						<ul class="breadcrumb">
+							<li><a href="#">Dashboard</a></li>
+							<li><i class='bx bx-chevron-right'></i></li>
+							<li><a class="active" href="#">Team</a></li>
+						</ul>
+					</div>
+					<button class="btn-add" id="add-member-btn">
+						<i class='bx bx-plus'></i>
+						<span class="text">Add New Member</span>
+					</button>
+				</div>
+
+				<!-- Team Groups -->
+				<div class="team-groups">
+					<!-- Tech Support Team -->
+					<div class="team-card">
+						<div class="team-header">
+							<div class="team-icon">
+								<i class='bx bx-wrench'></i>
+							</div>
+							<div class="team-info">
+								<h3>Tech Support Team</h3>
+								<p>Technical support and maintenance</p>
+							</div>
+						</div>
+						<div class="team-members">
+							<!-- Members will be added dynamically -->
+						</div>
+					</div>
+
+					<!-- Customer Service Team -->
+					<div class="team-card">
+						<div class="team-header">
+							<div class="team-icon">
+								<i class='bx bx-message-rounded-dots'></i>
+							</div>
+							<div class="team-info">
+								<h3>Customer Service Team</h3>
+								<p>Customer support and assistance</p>
+							</div>
+						</div>
+						<div class="team-members">
+							<!-- Members will be added dynamically -->
+						</div>
+					</div>
+
+					<!-- Quality Team -->
+					<div class="team-card">
+						<div class="team-header">
+							<div class="team-icon">
+								<i class='bx bx-check-circle'></i>
+							</div>
+							<div class="team-info">
+								<h3>Quality Team</h3>
+								<p>Quality assurance and testing</p>
+							</div>
+						</div>
+						<div class="team-members">
+							<!-- Members will be added dynamically -->
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Add Member Modal -->
+			<div id="add-member-modal" class="modal">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3>Add New Team Member</h3>
+						<span class="close-modal">&times;</span>
+					</div>
+					<div class="modal-body">
+						<form id="add-member-form">
+							<div class="form-group">
+								<label for="member-name">Full Name</label>
+								<input type="text" id="member-name" required placeholder="Enter member's full name">
+							</div>
+							<div class="form-group">
+								<label for="member-email">Email</label>
+								<input type="email" id="member-email" required placeholder="Enter member's email">
+							</div>
+							<div class="form-group">
+								<label for="member-password">Password</label>
+								<div class="password-input">
+									<input type="password" id="member-password" required placeholder="Enter password">
+									<i class='bx bx-show password-toggle'></i>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="member-team">Assign to Team</label>
+								<select id="member-team" required>
+									<option value="">Select a team</option>
+									<option value="tech-support">Tech Support Team</option>
+									<option value="customer-service">Customer Service Team</option>
+									<option value="quality">Quality Team</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="member-role">Role</label>
+								<select id="member-role" required>
+									<option value="">Select a role</option>
+									<option value="team-lead">Team Lead</option>
+									<option value="senior">Senior Member</option>
+									<option value="member">Team Member</option>
+								</select>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn-secondary close-modal">Cancel</button>
+						<button type="button" class="btn-primary" id="save-member">Add Member</button>
+					</div>
+				</div>
+			</div>
+
+			<div id="analytics-section" style="display:none;">
+    <div class="head-title">
+        <div class="left">
+            <h1>Analytics</h1>
+            <ul class="breadcrumb">
+                <li><a href="#">Dashboard</a></li>
+                <li><i class='bx bx-chevron-right'></i></li>
+                <li><a class="active" href="#">Analytics</a></li>
+            </ul>
+        </div>
+        <a href="#" class="btn-download" id="download-pdf">
+            <i class='bx bxs-cloud-download' ></i>
+            <span class="text">Download PDF</span>
+        </a>
+    </div>
+    <ul class="box-info">
+        <li>
+            <i class='bx bxs-calendar-check' ></i>
+            <span class="text">
+                <h3>1020</h3>
+                <p>New Reclamation</p>
+            </span>
+        </li>
+        <li>
+            <i class='bx bxs-group' ></i>
+            <span class="text">
+                <h3>2834</h3>
+                <p>Visitors</p>
+            </span>
+        </li>
+        <li>
+            <i class='bx bxs-check-circle' ></i>
+            <span class="text">
+                <h3>156</h3>
+                <p>Completed Tasks</p>
+            </span>
+        </li>
+    </ul>
+</div>
+
 			<div class="head-title">
 				<div class="left">
 					<h1>Dashboard</h1>
@@ -92,35 +371,13 @@
 						</li>
 					</ul>
 				</div>
-				<a href="#" class="btn-download">
+				<a href="#" class="btn-download" id="download-pdf">
 					<i class='bx bxs-cloud-download' ></i>
 					<span class="text">Download PDF</span>
 				</a>
 			</div>
 
-			<ul class="box-info">
-				<li>
-					<i class='bx bxs-calendar-check' ></i>
-					<span class="text">
-						<h3>1020</h3>
-						<p>New Reclamation</p>
-					</span>
-				</li>
-				<li>
-					<i class='bx bxs-group' ></i>
-					<span class="text">
-						<h3>2834</h3>
-						<p>Visitors</p>
-					</span>
-				</li>
-				<li>
-					<i class= ></i>
-					<span class="text">
-						<h3></h3>
-						<p></p>
-					</span>
-				</li>
-			</ul>
+			
 
 
 			<div class="table-data">
@@ -216,23 +473,21 @@
 				<div class="todo">
 					<div class="head">
 						<h3>Todos</h3>
-						<i class='bx bx-plus' ></i>
-						<i class='bx bx-filter' ></i>
+						<i class='bx bx-plus' id="add-todo"></i>
+						<i class='bx bx-filter'></i>
 					</div>
 					<ul class="todo-list">
-						
 						<li class="completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
+							<p>Assign tasks to Tech Support team</p>
+							<i class='bx bx-dots-vertical-rounded todo-actions'></i>
+						</li>
+						<li class="process">
+							<p>Review pending assignments</p>
+							<i class='bx bx-dots-vertical-rounded todo-actions'></i>
 						</li>
 						<li class="not-completed">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
-						</li>
-						
-						<li class="process">
-							<p>Todo List</p>
-							<i class='bx bx-dots-vertical-rounded' ></i>
+							<p>Follow up on completed tasks</p>
+							<i class='bx bx-dots-vertical-rounded todo-actions'></i>
 						</li>
 					</ul>
 				</div>
@@ -360,34 +615,60 @@ document.querySelectorAll('.assignee-cell').forEach(cell => {
 <!-- Modal Overlay and Assign Modal -->
 <div id="assign-overlay" class="assign-overlay" style="display:none;"></div>
 <div id="assign-modal" class="assign-modal" style="display:none;">
-  <div class="assign-modal-content">
-    <div class="assign-modal-title">Assign Group</div>
-    <input type="text" class="assign-search" placeholder="Search" />
-    <div class="assign-group-list">
-      <div class="assign-group-item" data-value="1">
-        <span class="assign-group-icon" style="color:#1976d2;"><i class='bx bx-wrench'></i></span>
-        <span class="assign-group-info">
-          <span class="assign-group-name">Tech Support</span>
-          <span class="assign-group-members">4 members</span>
-        </span>
-      </div>
-      <div class="assign-group-item" data-value="2">
-        <span class="assign-group-icon" style="color:#43a047;"><i class='bx bx-message-rounded-dots'></i></span>
-        <span class="assign-group-info">
-          <span class="assign-group-name">Customer Service</span>
-          <span class="assign-group-members">6 members</span>
-        </span>
-      </div>
-      <div class="assign-group-item" data-value="3">
-        <span class="assign-group-icon" style="color:#fb8c00;"><i class='bx bx-check-circle'></i></span>
-        <span class="assign-group-info">
-          <span class="assign-group-name">Quality Team</span>
-          <span class="assign-group-members">3 members</span>
-        </span>
-      </div>
+    <div class="assign-modal-content">
+        <div class="assign-modal-header">
+            <h3>Assign Task</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        <div class="assign-modal-body">
+            <div class="search-box">
+                <input type="text" id="member-search" placeholder="Search members...">
+            </div>
+            <div class="members-list">
+                <!-- Tech Support Team -->
+                <div class="team-section">
+                    <div class="team-header">
+                        <i class='bx bx-wrench'></i>
+                        <span>Tech Support</span>
+                    </div>
+                    <div class="team-members">
+                        <div class="member-item" onclick="selectMember(this)">John Doe</div>
+                        <div class="member-item" onclick="selectMember(this)">Jane Smith</div>
+                        <div class="member-item" onclick="selectMember(this)">Mike Johnson</div>
+                    </div>
+                </div>
+                
+                <!-- Customer Service Team -->
+                <div class="team-section">
+                    <div class="team-header">
+                        <i class='bx bx-message-rounded-dots'></i>
+                        <span>Customer Service</span>
+                    </div>
+                    <div class="team-members">
+                        <div class="member-item" onclick="selectMember(this)">Alex Brown</div>
+                        <div class="member-item" onclick="selectMember(this)">Emily Davis</div>
+                        <div class="member-item" onclick="selectMember(this)">Chris Lee</div>
+                    </div>
+                </div>
+                
+                <!-- Quality Team -->
+                <div class="team-section">
+                    <div class="team-header">
+                        <i class='bx bx-check-circle'></i>
+                        <span>Quality Team</span>
+                    </div>
+                    <div class="team-members">
+                        <div class="member-item" onclick="selectMember(this)">Robert White</div>
+                        <div class="member-item" onclick="selectMember(this)">Jennifer Black</div>
+                        <div class="member-item" onclick="selectMember(this)">Thomas Green</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="assign-modal-footer">
+            <button id="assign-button" class="assign-btn" disabled>Assign Task</button>
+        </div>
     </div>
-    <button class="assign-btn" disabled>Assign</button>
-  </div>
 </div>
 <script>
 // Modal logic
@@ -552,7 +833,83 @@ let selectedGroupValue = null;
   background: #bcd4f6;
   cursor: not-allowed;
 }
+.messages-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  padding: 32px 24px;
+  margin: 32px auto;
+  max-width: 680px;
+}
+.messages-card h2 {
+  margin-bottom: 18px;
+  font-size: 1.5rem;
+  color: #2a4c7b;
+}
+.messages-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.messages-table th, .messages-table td {
+  padding: 10px 12px;
+  text-align: left;
+}
+.messages-table th {
+  background: #f3f7fa;
+  color: #2a4c7b;
+}
+.messages-table tr {
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.messages-table tr:hover {
+  background: #f0f6ff;
+}
+.assign-modal-content .assign-btn#close-message-modal {
+  background: #2a4c7b;
+  color: #fff;
+  margin-top: 8px;
+}
 </style>
+<script>
+// Show messages section
+const dashboardLink = document.getElementById('dashboard-link');
+const messagesLink = document.getElementById('messages-link');
+const mainContent = document.querySelector('main > .head-title').parentElement;
+const messagesSection = document.getElementById('messages-section');
+
+dashboardLink.addEventListener('click', function(e) {
+  e.preventDefault();
+  messagesSection.style.display = 'none';
+  mainContent.querySelector('.head-title').style.display = '';
+  mainContent.querySelectorAll(':scope > *:not(#messages-section):not(#message-modal)').forEach(el => {
+    if(el !== messagesSection && el.id !== 'message-modal') el.style.display = '';
+  });
+});
+
+messagesLink.addEventListener('click', function(e) {
+  e.preventDefault();
+  messagesSection.style.display = '';
+  mainContent.querySelector('.head-title').style.display = 'none';
+  mainContent.querySelectorAll(':scope > *:not(#messages-section):not(#message-modal)').forEach(el => {
+    if(el !== messagesSection && el.id !== 'message-modal') el.style.display = 'none';
+  });
+});
+
+// Show message modal on row click
+Array.from(document.querySelectorAll('.message-row')).forEach(row => {
+  row.addEventListener('click', function() {
+    document.getElementById('message-modal-body').innerText = row.getAttribute('data-message');
+    document.getElementById('message-modal').style.display = '';
+    document.getElementById('assign-overlay').style.display = '';
+  });
+});
+document.getElementById('close-message-modal').onclick = function() {
+  document.getElementById('message-modal').style.display = 'none';
+  document.getElementById('assign-overlay').style.display = 'none';
+};
+</script>
 </body>
 <style>
   .assignee-group-dropdown {
@@ -565,4 +922,174 @@ let selectedGroupValue = null;
     margin: 0 0 0 4px;
   }
 </style>
+<!-- Todo Actions Menu -->
+<div class="todo-actions-menu" style="display: none;">
+    <div class="menu-item" data-status="completed">
+        <i class='bx bx-check-circle'></i> Mark as Completed
+    </div>
+    <div class="menu-item" data-status="process">
+        <i class='bx bx-time-five'></i> Mark as In Process
+    </div>
+    <div class="menu-item" data-status="not-completed">
+        <i class='bx bx-x-circle'></i> Mark as Not Completed
+    </div>
+    <div class="menu-item delete-todo">
+        <i class='bx bx-trash'></i> Delete
+    </div>
+</div>
+
+<!-- Add Todo Modal -->
+<div id="add-todo-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Add New Todo</h3>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="new-todo-input" placeholder="Enter todo text...">
+            <select id="todo-status">
+                <option value="not-completed">Not Completed</option>
+                <option value="process">In Process</option>
+                <option value="completed">Completed</option>
+            </select>
+        </div>
+        <div class="modal-footer">
+            <button id="save-todo" class="btn-primary">Add Todo</button>
+            <button class="btn-secondary close-modal">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Section -->
+<div id="settings-section" style="display:none;">
+    <div class="head-title">
+        <div class="left">
+            <h1>Settings</h1>
+            <ul class="breadcrumb">
+                <li><a href="#">Dashboard</a></li>
+                <li><i class='bx bx-chevron-right'></i></li>
+                <li><a class="active" href="#">Settings</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="settings-container">
+        <!-- Profile Settings -->
+        <div class="settings-card">
+            <div class="settings-header">
+                <i class='bx bx-user-circle'></i>
+                <h3>Profile Settings</h3>
+            </div>
+            <div class="settings-body">
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label>Profile Picture</label>
+                        <div class="profile-upload">
+                            <div class="profile-pic">
+                                <i class='bx bx-user'></i>
+                            </div>
+                            <button type="button" class="btn-upload">
+                                <i class='bx bx-upload'></i>
+                                Upload Photo
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="settings-name" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="settings-email" placeholder="Enter your email">
+                    </div>
+                    <button type="submit" class="btn-save">Save Changes</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="settings-card">
+            <div class="settings-header">
+                <i class='bx bx-lock-alt'></i>
+                <h3>Security Settings</h3>
+            </div>
+            <div class="settings-body">
+                <form id="security-form">
+                    <div class="form-group">
+                        <label>Current Password</label>
+                        <input type="password" id="current-password" placeholder="Enter current password">
+                    </div>
+                    <div class="form-group">
+                        <label>New Password</label>
+                        <input type="password" id="new-password" placeholder="Enter new password">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password</label>
+                        <input type="password" id="confirm-password" placeholder="Confirm new password">
+                    </div>
+                    <button type="submit" class="btn-save">Update Password</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Notification Settings -->
+        <div class="settings-card">
+            <div class="settings-header">
+                <i class='bx bx-bell'></i>
+                <h3>Notification Settings</h3>
+            </div>
+            <div class="settings-body">
+                <div class="notification-settings">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Email Notifications</h4>
+                            <p>Receive email notifications for new tasks</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="email-notifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Task Updates</h4>
+                            <p>Get notified when tasks are updated</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="task-notifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>Team Changes</h4>
+                            <p>Notifications about team member changes</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="team-notifications">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Logout Confirmation Modal -->
+<div id="logout-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Confirm Logout</h3>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to logout?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary close-modal">Cancel</button>
+            <button class="btn-primary" id="confirm-logout">Logout</button>
+        </div>
+    </div>
+</div>
 </html>
